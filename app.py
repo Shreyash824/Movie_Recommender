@@ -1,5 +1,3 @@
-import random
-
 import streamlit as st
 
 from recommender import MovieRecommender
@@ -185,14 +183,8 @@ with st.sidebar:
 tab_rec, tab_add = st.tabs(["🎬 Recommendations", "➕ Add Movie"])
 
 with tab_rec:
-    c1, c2 = st.columns([2, 1])
-    with c1:
-        query = st.text_input("🔎 Type a movie name to search:",
-                              placeholder="e.g. Inception, The Dark Knight...")
-    with c2:
-        surprise = st.button("🎲 Surprise Me")
-        if surprise:
-            st.session_state["random_pick"] = random.choice(rec.titles)
+    query = st.text_input("🔎 Type a movie name to search:",
+                          placeholder="e.g. Inception, The Dark Knight...")
 
     selected_movie = None
     if query:
@@ -202,7 +194,6 @@ with tab_rec:
         else:
             st.warning("No matching movie found. Try a different name.")
 
-    random_pick = st.session_state.get("random_pick")
     st.markdown("#### 📚 or browse the catalog")
     catalog = st.selectbox("All movies:", ["-- Choose a movie --"] + rec.titles,
                            label_visibility="collapsed")
@@ -212,9 +203,6 @@ with tab_rec:
         movie = selected_movie
     elif catalog != "-- Choose a movie --":
         movie = catalog
-    elif random_pick:
-        movie = random_pick
-        st.info(f"🎲 Random pick: **{movie}**")
 
     if movie:
         recommendations, error = rec.get_similar(movie, top_n=top_n)
@@ -278,3 +266,4 @@ with tab_add:
             st.markdown(movie_card_html(m["title"], m["genres"]), unsafe_allow_html=True)
     else:
         st.caption("No custom movies added yet.")
+
